@@ -75,7 +75,7 @@
     .p_content
 </style>
 <script type="text/javascript">
-    /* ************************************** */
+/* ************************************** */
 // nothing to see
 /* ************************************** */
 window.mobilecheck = function() {
@@ -117,9 +117,7 @@ function randomHole() {
 }
 function hitHole(elt) {
     var hole = holes[elt.attr("data-id")];
-    console.log(hole.number+" "+hole.isEnable);
     if (hole.isEnable) {
-        console.log("enable");
         incrementScore();
         hole.isEnable = false;
         setState(hole, 10); // hit state
@@ -127,7 +125,7 @@ function hitHole(elt) {
 }
 function enableHole(nb) {
     var hole = holes[nb]
-        if (hole.isSpawned) return;
+    if (hole.isSpawned) return;
     setState(holes[nb], 1); // first state
     hole.isEnable = true;
     hole.isSpawned = true;
@@ -182,7 +180,7 @@ function desableHoles() {
 function destroyHoles() {
     for (var i = 0; i < nbHole; i++) {
         desableHole(i);
-		clearTimout(holes[i].spawnInterval);
+		clearTimeout(holes[i].spawnInterval);
     }
 }
 /* ************************************** */
