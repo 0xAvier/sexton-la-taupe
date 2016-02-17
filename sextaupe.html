@@ -92,14 +92,6 @@ var picture_height = 106;
 /* ************************************** */
 // hole definition section
 /* ************************************** */
-// number
-// isEnable
-// img_1
-// img_2
-// img_hit_1
-// img_hit_2
-// posX
-// posY
 var nbHole = 1;
 var nbActiveHole = 0;
 function initHole(nb) {
@@ -110,6 +102,7 @@ function initHole(nb) {
     hole.img_hit_2 = "";
     hole.state = 0;
     hole.timeOut = null;
+	hole.spawnInterval = setInterval(function() {enableHole(nb)}, spawnInterval);
     holes.push(hole);
 }
 /* ************************************** */
@@ -184,6 +177,12 @@ function enableRandomHole() {
 function desableHoles() {
     for (var i = 0; i < nbHole; i++) {
         desableHole(i);
+    }
+}
+function destroyHoles() {
+    for (var i = 0; i < nbHole; i++) {
+        desableHole(i);
+		clearTimout(holes[i].spawnInterval);
     }
 }
 /* ************************************** */
@@ -266,7 +265,6 @@ function initGame() {
 }
 function game() {
     initGame();
-    spawnInterval = setInterval(enableRandomHole, spawnInterval);
     setTimeout(endGame, gameLength);
 }
 function endGame() {
@@ -284,7 +282,7 @@ function endGame() {
             $("#game").addClass("end-lost");
         }
     }
-    desableHoles();
+    destroyHoles();
 }
 function launchGame() {
     if ($("#game").hasClass("playing")) {
