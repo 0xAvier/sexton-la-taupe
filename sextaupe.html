@@ -33,7 +33,7 @@
         background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/Ecran-Intro.png"); 
     }
     #game.playing {
-        background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455650034-fond.png");
+        background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455738036-fondsanspneu.png");
     }
     #game.end-parisse {
         background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455650034-fond.png");
@@ -89,7 +89,6 @@ window.mobilecheck = function() {
 // value in pixel
 var picture_width = 75;
 var picture_height = 106;
-var sextonImg = "http://img110.xooimage.com/files/8/a/8/jonny_sexton_3023219b-4e72b5b.png";
 /* ************************************** */
 // hole definition section
 /* ************************************** */
@@ -151,24 +150,24 @@ function setState(hole, state) {
     if (state === 1) {
         clearTimeout(hole.timeOut);
         // display ascending gif
-        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455704601-gifmonteerang2.gif\")");
+        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455739670-s-gif-montee.gif\")");
         hole.timeOut = setTimeout(function () {setState(hole, 2);}, gifDuration); // to remove
     }
     if (state === 2) {
         clearTimeout(hole.timeOut);
         // display pause image
-        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455704601-sexton-hauteur-maxrang2.png\")");
+        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455739668-s-tetehaute.png\")");
         hole.timeOut = setTimeout(function () {setState(hole, 100);}, spawnDuration - gifDuration);
     }
     if (state === 10) {
         // hit
         elt.src = hole.img_hit_1;
-        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455704601-rang2bobogif.gif\")");
+        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455739669-s-bobo.gif\")");
         clearTimeout(hole.timeOut);
         setTimeout(function () {setState(hole, 0);}, 500);
     }
     if (state === 100) {
-        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455704601-gifdescenterang2.gif\")");
+        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455739669-s-gif-descente.gif\")");
         clearTimeout(hole.timeOut);
         setTimeout(function () {desableHole(hole.number);}, 500); // to remove;
     }
@@ -271,7 +270,6 @@ function game() {
     setTimeout(endGame, gameLength);
 }
 function endGame() {
-    return;
     $("#game").removeClass("playing");
     clearTimeout(spawnInterval);
     if (hitParisse) {
@@ -291,6 +289,15 @@ function endGame() {
 function launchGame() {
     if ($("#game").hasClass("playing")) {
         return;
+    }
+    if ($("#game").hasClass("end-parisse")) {
+        $("#game").removeClass("end-parisse");
+    }
+    if ($("#game").hasClass("end-won")) {
+        $("#game").removeClass("end-won");
+    }
+    if ($("#game").hasClass("end-lost")) {
+        $("#game").removeClass("end-lost");
     }
     $("#game").addClass("playing");
     $("#game").removeClass("start");
