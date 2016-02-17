@@ -7,16 +7,8 @@
     </div>
 
     <div name="holes" id="holes">
-<!--        <area shape="rect" coords="200,150,300,200" onclick="clickOnHole(0)" style="z-index: 1">
--->
     </div>
 
-
-    <!--
-    <map name="mapBG">
-        <area shape="rect" coords="0, 0,1074,805" onclick="launchGame()" style="z-index: 1">
-    </map>
-    -->
 </div>
 
 <style>
@@ -44,12 +36,6 @@
     #game.end-lost {
         background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/Time-Out-1.png");
     }
-    #game.playing > .score {
-        visibility: visible;
-    }
-    #game.playing > .score#end-score {
-        visibility: hidden;
-    }
     #game > #score {
         position: absolute; 
         top: 22px; 
@@ -66,10 +52,15 @@
     }
     #game .hole {
         position: absolute; 
-        z-index : 1;
+        z-index : 2;
         background-repeat: no-repeat no-repeat;
     }
-    .hole[data-state="0"], #game.start .hole, #game.end .hole {
+	#game .empty-hole {
+		position: absolute; 
+        z-index : 1;
+        background-repeat: no-repeat no-repeat;
+	}
+    .hole[data-state="0"], #game.start .hole, #game.end .hole, #game.start .empty-hole, #game.end .empty-hole {
         visibility: hidden;
     }
     .p_content
@@ -193,7 +184,6 @@ var score;
 function setScore(s) {
     score = s;
     var score_txt = "" + s + " point" + (score > 1 ? "s" : "");
-console.log(score_txt);
     $("#score").text(score_txt); 
 }
 function incrementScore() {
@@ -208,8 +198,8 @@ function incrementScore() {
 // frame size (pixel)
 var frame_height = 805;
 var frame_width = 1074;
-var img_height = 200;
-var img_width = 200;
+var img_height = 182;
+var img_width = 173;
 // x position of pictures (pixel)
 //                   1    2    3    4    5    6
 var x_picture_pos = [330, 202, 95, 256, 144,  95];
@@ -234,6 +224,11 @@ function initHolesResources() {
         $("#hole-" + i).click(function() {
             hitHole($(this));
         });
+		$("#holes").append("<img class=\"empty-hole\" id=\"empty-hole-" + i + "\" src= \"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455739669-s-pneuseul.png\"></div>");
+        $("#empty-hole-" + i).css("top", x + "px");
+        $("#empty-hole-" + i).css("left", y + "px");
+        $("#empty-hole-" + i).css("width", dx + "px");
+        $("#empty-hole-" + i).css("height", dy + "px");
     }
 }
 function initResources() {
