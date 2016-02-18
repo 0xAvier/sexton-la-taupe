@@ -183,7 +183,7 @@ function desableHole(nb) {
     clearTimeout(holes[nb].timeOut);
     $("#hole-" + nb).css("background-image", "");
     $("#hole-" + nb).attr("data-state", 0);
-	holes[nb].spawnTimeout = setTimeout(function() {enableHole(nb)}, randInterval());
+    holes[nb].spawnTimeout = setTimeout(function() {enableHole(nb)}, randInterval());
 }
 function enableRandomHole() {
     enableHole(randomHole());
@@ -196,7 +196,7 @@ function desableHoles() {
 function destroyHoles() {
     for (var i = 0; i < nbHole; i++) {
         desableHole(i);
-		clearTimeout(holes[i].spawnTimeout);
+	clearTimeout(holes[i].spawnTimeout);
     }
 }
 /* ************************************** */
@@ -289,6 +289,9 @@ function game() {
     setTimeout(endGame, gameLength);
 }
 function endGame() {
+    // disable replay for 1"
+    $("#game").unbind("click");
+    setTimeout(function() {$("#game").click(launchGame)}, 2000);
     $("#game").removeClass("playing");
     $("#game").addClass("end");
     clearTimeout(spawnInterval);
@@ -296,12 +299,9 @@ function endGame() {
     if (hitParisse) {
         $("#game").addClass("end-parisse");
     } else {
-        console.log(score + " " + targetScore);
         if (score >= targetScore) {
-            console.log(score + "won " + targetScore);
             $("#game").addClass("end-won");
         } else {            
-            console.log(score + " lost " + targetScore);
             $("#game").addClass("end-lost");
         }
     }
