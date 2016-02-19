@@ -31,6 +31,7 @@
     }
     #game.playing {
         background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455738036-fondsanspneu.png");
+        cursor: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/marthaut1.png") 0 64, none;
     }
     #game.end-parisse {
         background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455650034-fond.png");
@@ -256,6 +257,12 @@ function initResources() {
     resizeBackground();
     initHolesResources();
     $("#game").click(launchGame);
+    $("#game.playing").click(function() {
+        $("#game.playing").css("cursor", "url(http://boucherie-ovalie.org/wp-content/uploads/2016/02/martbas1.png) 0 64, none");
+        setTimeout(function() {
+            $("#game.playing").css("cursor", "");
+        }, 200);
+    });
 }
 /* ************************************** */
 // end resources section
