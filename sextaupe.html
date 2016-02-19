@@ -130,7 +130,7 @@ function randomHole() {
     return Math.floor(nb);
 }
 var randInterval = function() {
-    return Math.floor(Math.random() * (spawnInterval - 50*score));
+    return Math.floor(Math.random() * (spawnInterval - spawnAcceleration*score));
 }
 function hitHole(elt) {
     var hole = holes[elt.attr("data-id")];
@@ -236,9 +236,9 @@ function setScore(s) {
 }
 function incrementScore(delta) {
     if (delta > 0) {
-        spawnDuration -= acceleration;
-        if (spawnDuration < gifDuration) {
-    	    spawnDuration = gifDuration;
+        spawnDuration -= vanishAcceleration;
+        if (spawnDuration < minApparitionTime) {
+    	    spawnDuration = minApparitionTime;
         }
     } 
     setScore(score + delta);
@@ -314,14 +314,22 @@ var gameLength;
 var hitParisse;
 var spawnParisseProba;
 var endGameTimeout;
+var minApparitionTime;
+var vanishAcceleration;
+var spawnAcceleration;
 function initGame() {
     holes = [];
-    spawnInterval = 10000;
-    spawnDuration = 1500;
-    gameLength = 45000;
-    targetScore = 500;
-    acceleration = 10; // each time you score: heads are quicker to disappear
-    spawnParisseProba = 1.0 / 15;
+    /* Game config */
+    spawnInterval = 10000; // spawn interval for EACH hole
+    gameLength = 45000;    // game length 
+    /* Game difficulty parameter  */
+    targetScore = 500;       // score to reach 
+    spawnDuration = 1500;    // time the spawn stay in game (at first)
+    vanishAcceleration = 10; // each time you score: heads are quicker to disappear
+    minApparitionTime = 900; // the time will always stay at least minApparitionTime (must be higher than gifDuration 
+    spawnAcceleration = 10;  // spawn faster when you score 
+    spawnParisseProba = 1.0 / 15; // chance for parisse to spawn
+    /* Others stuffs */
     hitParisse = false;
     setScore(0);
     for (var i = 0; i < nbHole; i++) {
