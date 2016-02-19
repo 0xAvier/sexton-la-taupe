@@ -7,6 +7,10 @@
     <div id="score">
         0 point
     </div>
+    <div id="score-face-hit">
+    </div>
+    <div id="score-face">
+    </div>
 
     <div name="holes" id="holes">
         <div class="hole" data-state="0" id="hole-0" data-id="0"><div class="sexton"></div></div>
@@ -105,6 +109,26 @@
     #game.start #holes, #game.end #holes {
         visibility: hidden;
     }
+    #game #score-face, #game #score-face-hit {
+        position: absolute;
+        width: 118px;
+        height: 186px;
+        top: 58px; 
+        right: 30px;
+        background-size: 100% 100%;
+        visibility: hidden;
+    }
+    #game.playing #score-face, #game.playing #score-face-hit {
+        visibility: visible;
+    }
+    #game #score-face {
+        z-index: 4;
+        background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/mama1.png");
+    }
+    #game #score-face-hit {
+        z-index: 3;
+        background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/mama3.png");
+    }
 </style>
 <script type="text/javascript">
 /* ************************************** */
@@ -161,6 +185,8 @@ function hitHole(elt) {
         } else {
             incrementScore(10);
             hole.isEnable = false;
+            $("#score-face").css("visibility", "hidden");
+            setTimeout(function() {$("#score-face").css("visibility", "");}, 250);
             setState(hole, 10); // hit state
         }
     }
