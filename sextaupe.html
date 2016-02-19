@@ -198,6 +198,7 @@ function desableHole(nb) {
     clearTimeout(holes[nb].timeOut);
     $("#hole-" + nb).css("background-image", "");
     $("#hole-" + nb).attr("data-state", 0);
+    clearTimeout(holes[nb].spawnTimeout);
     holes[nb].spawnTimeout = setTimeout(function() {enableHole(nb)}, randInterval());
 }
 function enableRandomHole() {
@@ -308,8 +309,8 @@ function initGame() {
     spawnInterval = 7000;
     spawnDuration = 1500;
     gameLength = 10000;
-    targetScore = 2;
-    spawnParisseProba = 1.0/10;
+    targetScore = 100;
+    spawnParisseProba = 1.0/5;
     hitParisse = false;
     setScore(0);
     for (var i = 0; i < nbHole; i++) {
