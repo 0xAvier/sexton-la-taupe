@@ -14,6 +14,14 @@
         <div class="hole" data-state="0" id="hole-4" data-id="4"></div>
         <div class="hole" data-state="0" id="hole-5" data-id="5"></div>
     </div>
+    <div name="empty-holes" id="empty-holes">
+        <div class="empty-hole" id="empty-hole-0"></div>
+        <div class="empty-hole" id="empty-hole-1"></div>
+        <div class="empty-hole" id="empty-hole-2"></div>
+        <div class="empty-hole" id="empty-hole-3"></div>
+        <div class="empty-hole" id="empty-hole-4"></div>
+        <div class="empty-hole" id="empty-hole-5"></div>
+    </div>
 
 </div>
 
@@ -34,7 +42,7 @@
         background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455738036-fondsanspneu.png");
     }
     #game.end-parisse {
-        background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455650034-fond.png");
+        background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/game-over.png");
     }
     #game.end-won {
         background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/Time-Out-2.png");
@@ -106,7 +114,7 @@ function initHole(nb) {
     hole.img_hit_2 = "";
     hole.state = 0;
     hole.timeOut = null;
-	hole.spawnTimeout = setTimeout(function() {enableHole(nb)}, randInterval());
+    hole.spawnTimeout = setTimeout(function() {enableHole(nb)}, randInterval());
     holes.push(hole);
 }
 /* ************************************** */
@@ -128,16 +136,26 @@ var randInterval = function() {
 function hitHole(elt) {
     var hole = holes[elt.attr("data-id")];
     if (hole.isEnable) {
-        incrementScore(2);
-        hole.isEnable = false;
-        setState(hole, 10); // hit state
+        if (elt.attr("data-state") === "20") {
+            hitParisse = true;
+            setScore(0); // score to 0
+	    endGame();
+        } else {
+            incrementScore(10);
+            hole.isEnable = false;
+            setState(hole, 10); // hit state
+        }
     }
 }
 
 function enableHole(nb) {
     var hole = holes[nb]
     if (hole.isSpawned) return;
-    setState(holes[nb], 1); // first state
+    if (Math.random() < spawnParisseProba) {
+    	setState(holes[nb], 20); // parisse state
+    } else {
+    	setState(holes[nb], 1); // first state
+    }
     hole.isEnable = true;
     hole.isSpawned = true;
 }
@@ -153,25 +171,30 @@ function setState(hole, state) {
     if (state === 1) {
         clearTimeout(hole.timeOut);
         // display ascending gif
-        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455739670-s-gif-montee.gif\")");
+        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/s_GifMonteesspneu.gif\")");
         hole.timeOut = setTimeout(function () {setState(hole, 2);}, gifDuration); // to remove
     }
     if (state === 2) {
         clearTimeout(hole.timeOut);
         // display pause image
-        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455739668-s-tetehaute.png\")");
+        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/s_hautesspneu.gif\")");
         hole.timeOut = setTimeout(function () {setState(hole, 100);}, spawnDuration - gifDuration);
     }
     if (state === 10) {
         // hit
-        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455739669-s-bobo.gif\")");
+        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/s_Bobosspneu.gif\")");
         clearTimeout(hole.timeOut);
         setTimeout(function () {setState(hole, 0);}, 500);
     }
-    if (state === 100) {
-        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455739669-s-gif-descente.gif\")");
+    if (state === 20) {
+        // hit parisse
+	elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/s_Parissesspneu.gif\")");
         clearTimeout(hole.timeOut);
-        incrementScore(-1);
+        setTimeout(function () {desableHole(hole.number);}, 1000);
+    }
+    if (state === 100) {
+        elt.css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/s_Gifdescentesspneu.gif\")");
+        clearTimeout(hole.timeOut);
         setTimeout(function () {desableHole(hole.number);}, 400);
     }
     elt.attr("data-state", state);
@@ -197,6 +220,7 @@ function destroyHoles() {
     for (var i = 0; i < nbHole; i++) {
         desableHole(i);
 	clearTimeout(holes[i].spawnTimeout);
+    	$("#empty-hole-" + i).css("background-image", "");
     }
 }
 /* ************************************** */
@@ -255,6 +279,12 @@ function initHolesResources() {
         $("#hole-" + i).click(function() {
             hitHole($(this));
         });
+        $("#empty-hole-" + i).css("top", x + "px");
+        $("#empty-hole-" + i).css("left", y + "px");
+        $("#empty-hole-" + i).css("width", zoom_picture_coef[i] * dx + "px");
+        $("#empty-hole-" + i).css("height", zoom_picture_coef[i] * dy + "px");
+        $("#empty-hole-" + i).css("height", zoom_picture_coef[i] * dy + "px");
+        $("#empty-hole-" + i).css("background-image", "url(\"http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455739669-s-pneuseul.png\")"); 
     }
 }
 function initResources() {
@@ -272,12 +302,15 @@ var spawnInterval;
 var spawnDuration;
 var gameLength;
 var hitParisse;
+var spawnParisseProba;
 function initGame() {
     holes = [];
     spawnInterval = 7000;
     spawnDuration = 1500;
     gameLength = 10000;
     targetScore = 2;
+    spawnParisseProba = 1.0/10;
+    spawnParisseProba = 1;
     hitParisse = false;
     setScore(0);
     for (var i = 0; i < nbHole; i++) {
@@ -289,9 +322,11 @@ function game() {
     setTimeout(endGame, gameLength);
 }
 function endGame() {
-    // disable replay for 1"
     $("#game").unbind("click");
     setTimeout(function() {$("#game").click(launchGame)}, 2000);
+    // 
+    destroyHoles();
+    // disable replay for 1"
     $("#game").removeClass("playing");
     $("#game").addClass("end");
     clearTimeout(spawnInterval);
@@ -305,7 +340,6 @@ function endGame() {
             $("#game").addClass("end-lost");
         }
     }
-    destroyHoles();
 }
 function launchGame() {
     if ($("#game").hasClass("playing")) {
