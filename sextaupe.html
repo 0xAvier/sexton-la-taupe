@@ -41,6 +41,9 @@
         background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/1455738036-fondsanspneu.png");
         cursor: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/marthaut1.png") 0 64, none;
     }
+    #game.end-gif-parisse {
+	background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/ezgif.com-video-to-gif.gif");f
+    }
     #game.end-parisse {
         background-image: url("http://boucherie-ovalie.org/wp-content/uploads/2016/02/game-over.png");
     }
@@ -232,6 +235,12 @@ function setScore(s) {
     $("#score").text(score_txt); 
 }
 function incrementScore(delta) {
+    if (delta > 0) {
+        spawnDuration -= acceleration;
+        if (spawnDuration < gifDuration) {
+    	    spawnDuration = gifDuration;
+        }
+    } 
     setScore(score + delta);
 }
 function setFinalScore() {
@@ -304,13 +313,15 @@ var spawnDuration;
 var gameLength;
 var hitParisse;
 var spawnParisseProba;
+var endGameTimeout;
 function initGame() {
     holes = [];
-    spawnInterval = 7000;
+    spawnInterval = 10000;
     spawnDuration = 1500;
-    gameLength = 10000;
-    targetScore = 100;
-    spawnParisseProba = 1.0/5;
+    gameLength = 45000;
+    targetScore = 500;
+    acceleration = 10; // each time you score: heads are quicker to disappear
+    spawnParisseProba = 1.0 / 15;
     hitParisse = false;
     setScore(0);
     for (var i = 0; i < nbHole; i++) {
@@ -319,21 +330,25 @@ function initGame() {
 }
 function game() {
     initGame();
-    setTimeout(endGame, gameLength);
+    endGameTimeout = setTimeout(endGame, gameLength);
 }
 function endGame() {
+    clearTimeout(endGameTimeout);
+    var pause = 2000;
+    if (hitParisse) {
+        pause = 4000;
+    }
     $("#game").unbind("click");
-    setTimeout(function() {$("#game").click(launchGame)}, 2000);
-    // 
+    setTimeout(function() {$("#game").click(launchGame)}, pause);
     destroyHoles();
     // disable replay for 1"
     $("#game").removeClass("playing");
     $("#game").addClass("end");
-    clearTimeout(spawnInterval);
-    setFinalScore();
     if (hitParisse) {
-        $("#game").addClass("end-parisse");
+        $("#game").addClass("end-gif-parisse");
+        setTimeout(function() {setFinalScore();$("#game").removeClass("end-gif-parisse");$("#game").addClass("end-parisse");}, 3990);
     } else {
+    	setFinalScore();
         if (score >= targetScore) {
             $("#game").addClass("end-won");
         } else {            
