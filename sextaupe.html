@@ -339,6 +339,7 @@ var spawnDuration;
 var gameLength;
 var hitParisse;
 var spawnParisseProba;
+var timeInterval;
 var endGameTimeout;
 var minApparitionTime;
 var vanishAcceleration;
@@ -366,10 +367,11 @@ function initGame() {
 function game() {
     initGame();
     endGameTimeout = setTimeout(endGame, gameLength);
-    setInterval(decrementTime, 1000);
+    timeInterval = setInterval(decrementTime, 1000);
 }
 function endGame() {
     clearTimeout(endGameTimeout);
+    clearInterval(timeInterval);
     var pause = 2000;
     if (hitParisse) {
         pause = 4000;
